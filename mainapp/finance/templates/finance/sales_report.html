@@ -1,0 +1,26 @@
+{% extends 'finance/base.html' %}
+
+{% block content %}
+<h2>Sales Report</h2>
+<h3>Total Sales: {{ total_sales }}</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Invoice #</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invoice in invoices %}
+        <tr>
+            <td>{{ invoice.id }}</td>
+            <td>{{ invoice.customer.name }}</td>
+            <td>{{ invoice.date_created }}</td>
+            <td>{{ invoice.get_total }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

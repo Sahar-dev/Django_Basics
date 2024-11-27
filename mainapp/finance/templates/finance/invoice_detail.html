@@ -1,0 +1,38 @@
+{% extends 'finance/base.html' %}
+
+{% block content %}
+<h2>Invoice #{{ invoice.id }}</h2>
+<p><strong>Customer:</strong> {{ invoice.customer.name }}</p>
+<p><strong>Date Created:</strong> {{ invoice.date_created }}</p>
+<p><strong>Due Date:</strong> {{ invoice.due_date }}</p>
+<p><strong>Status:</strong> {{ invoice.status }}</p>
+<p><strong>Salesperson:</strong> {{ invoice.salesperson }}</p>
+
+<h3>Items</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in invoice.items.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.product.unit_price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.get_total }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3"><strong>Total</strong></td>
+            <td><strong>{{ invoice.get_total }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+<a href="{% url 'invoice_pdf' invoice.pk %}" class="btn btn-success">Download PDF</a>
+<a href="{% url 'invoice_list' %}" class="btn btn-secondary">Back to Invoices</a>
+{% endblock %}

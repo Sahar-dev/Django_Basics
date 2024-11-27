@@ -1,0 +1,168 @@
+{% extends 'finance/base.html' %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="row">
+    <!-- Sales Over Time Chart -->
+    <div class="col-md-6">
+        <h4>Sales Over Time</h4>
+        <canvas id="salesChart" height="200"></canvas>
+    </div>
+
+    <!-- Expenses by Category Chart -->
+    <div class="col-md-6">
+        <h4>Expenses by Category</h4>
+        <canvas id="expensesChart" height="200"></canvas>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <!-- Invoices Status Distribution Chart -->
+    <div class="col-md-6">
+        <h4>Invoices Status Distribution</h4>
+        <canvas id="statusChart" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Parse JSON data passed from Django
+        var salesLabels = JSON.parse('{{ sales_labels|escapejs }}');
+        var salesTotals = JSON.parse('{{ sales_totals|escapejs }}');
+
+        var expenseLabels = JSON.parse('{{ expense_labels|escapejs }}');
+        var expenseTotals = JSON.parse('{{ expense_totals|escapejs }}');
+
+        var statusLabels = JSON.parse('{{ status_labels|escapejs }}');
+        var statusTotals = JSON.parse('{{ status_totals|escapejs }}');
+
+        // Sales Over Time Chart
+        var ctxSales = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctxSales, {
+            type: 'line',
+            data: {
+                labels: salesLabels,
+                datasets: [{
+                    label: 'Total Sales ($)',
+                    data: salesTotals,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.1 // For smooth curves
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sales Over Time'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount ($)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Expenses by Category Chart
+        var ctxExpenses = document.getElementById('expensesChart').getContext('2d');
+        var expensesChart = new Chart(ctxExpenses, {
+            type: 'pie',
+            data: {
+                labels: expenseLabels,
+                datasets: [{
+                    label: 'Expenses by Category',
+                    data: expenseTotals,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)',
+                        // Add more colors if needed
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        // Add corresponding border colors
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Expenses by Category'
+                    }
+                }
+            }
+        });
+
+        // Invoices Status Distribution Chart
+        var ctxStatus = document.getElementById('statusChart').getContext('2d');
+        var statusChart = new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: statusLabels,
+                datasets: [{
+                    label: 'Invoices by Status',
+                    data: statusTotals,
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.6)', // Paid
+                        'rgba(255, 99, 132, 0.6)', // Overdue
+                        'rgba(255, 206, 86, 0.6)', // Draft
+                        // Add more colors if you have more statuses
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        // Add corresponding border colors
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Invoices Status Distribution'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
