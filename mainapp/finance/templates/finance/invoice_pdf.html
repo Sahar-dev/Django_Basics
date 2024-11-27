@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+
+        .invoice-details p {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Invoice #{{ invoice.id }}</h1>
+    <div class="invoice-details">
+        <p><strong>Customer:</strong> {{ invoice.customer.name }}</p>
+        <p><strong>Date:</strong> {{ invoice.date_created }}</p>
+        <p><strong>Due Date:</strong> {{ invoice.due_date }}</p>
+    </div>
+    <h3>Items</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invoice.items.all %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.unit_price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.get_total }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="total">Total</td>
+                <td><strong>{{ invoice.get_total }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

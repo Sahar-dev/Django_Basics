@@ -1,0 +1,70 @@
+{% extends 'finance/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Update Invoice{% else %}Create Invoice{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <h3>Items</h3>
+    {{ formset.management_form }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in formset.forms %}
+            <tr>
+                <td>{{ form.product }}</td>
+                <td>{{ form.quantity }}</td>
+                <td>
+                    {{ form.DELETE }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Hidden empty form template -->
+    <div id="empty-form" style="display: none;">
+        <tr>
+            <td>{{ formset.empty_form.product }}</td>
+            <td>{{ formset.empty_form.quantity }}</td>
+            <td>
+                {{ formset.empty_form.DELETE }}
+            </td>
+        </tr>
+    </div>
+
+    <button type="button" class="btn btn-secondary" id="add-item">Add Item</button>
+    <br><br>
+    <button type="submit" class="btn btn-primary">
+        {% if form.instance.pk %}Update{% else %}Create{% endif %}
+    </button>
+    <a href="{% url 'invoice_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addItemBtn = document.getElementById('add-item');
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+        let formIdx = parseInt(totalForms.value);
+
+        addItemBtn.addEventListener('click', function () {
+            const formsetTable = document.querySelector('table tbody');
+            const emptyFormHtml = document.getElementById('empty-form').innerHTML.replace(/__prefix__/g, formIdx);
+
+            const tempDiv = document.createElement('tbody'); // Use tbody to wrap tr
+            tempDiv.innerHTML = emptyFormHtml;
+            const newRow = tempDiv.firstElementChild;
+
+            formsetTable.appendChild(newRow);
+            totalForms.value = ++formIdx;
+        });
+    });
+</script>
+{% endblock %}

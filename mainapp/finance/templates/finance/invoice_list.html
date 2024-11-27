@@ -1,0 +1,37 @@
+{% extends 'finance/base.html' %}
+
+{% block content %}
+<h2>Invoices</h2>
+<a href="{% url 'invoice_create' %}" class="btn btn-primary mb-2">Create Invoice</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Invoice #</th>
+            <th>Customer</th>
+            <th>Date Created</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invoice in invoices %}
+        <tr>
+            <td>{{ invoice.id }}</td>
+            <td>{{ invoice.customer.name }}</td>
+            <td>{{ invoice.date_created }}</td>
+            <td>{{ invoice.due_date }}</td>
+            <td>{{ invoice.status }}</td>
+            <td>{{ invoice.get_total }}</td>
+            <td>
+                <a href="{% url 'invoice_detail' invoice.pk %}" class="btn btn-sm btn-info">View</a>
+                <a href="{% url 'invoice_update' invoice.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'invoice_delete' invoice.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                <a href="{% url 'invoice_pdf' invoice.pk %}" class="btn btn-sm btn-success">Download PDF</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
