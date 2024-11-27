@@ -1,0 +1,45 @@
+name: Data Pipeline Monitoring Workflow
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  sentry-monitoring:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install sentry-sdk
+        pip install -r requirements.txt
+
+    - name: Configure Sentry Release
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      run: |
+        export SENTRY_RELEASE=$(git rev-parse HEAD)
+        sentry-cli releases new $SENTRY_RELEASE
+        sentry-cli releases set-commits $SENTRY_RELEASE --auto
+
+    - name: Run Data Quality Checks
+      run: |
+        python -m pytest tests/ --sentry-traces-sample-rate=1.0
+
+    - name: Finalize Sentry Release
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        sentry-cli releases finalize $SENTRY_RELEASE
