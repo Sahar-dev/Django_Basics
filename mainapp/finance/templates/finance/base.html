@@ -4,8 +4,32 @@
 <head>
     <title>Finance Management</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    {% load static %}
+    <<script src="https://js-de.sentry-cdn.com/c4a72c9518d6c2af612969312a5e8638.min.js" crossorigin="anonymous">
+        </script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        {% load static %}
+        <!-- Sentry Browser SDK -->
+        <!-- Removed the incomplete 'integrity' attribute to ensure the script loads correctly -->
+        <script src="https://browser.sentry-cdn.com/7.85.0/bundle.min.js" crossorigin="anonymous"></script>
+        <script>
+            Sentry.init({
+                dsn: "https://c4a72c9518d6c2af612969312a5e8638@o4508365968179200.ingest.de.sentry.io/4508370849235024",
+                integrations: [
+                    new Sentry.Integrations.Feedback({
+                        // Customize the feedback widget as needed
+                        colorScheme: "system", // Options: "light", "dark", "system"
+                        nameRequired: true,
+                        emailRequired: true,
+                        enableScreenshots: true,
+                        title: "Help Us Improve!",
+                        subtitle: "Please provide your feedback below:",
+                        target: "#custom-feedback-button", // Ensure this matches your button's ID
+                        // Additional customization options can be added here
+                    }),
+                ],
+                // Other configurations if needed
+            });
+        </script>
 </head>
 
 <body>
@@ -14,8 +38,12 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- Styled the button with Bootstrap classes for better visibility -->
+        <button id="custom-feedback-button" class="btn btn-outline-primary ml-3">Report an Issue</button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                <!-- Existing Nav Items -->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'customer_list' %}">Customers</a>
                 </li>

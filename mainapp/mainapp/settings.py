@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from sentry_sdk.integrations.django import DjangoIntegration
+import sentry_sdk
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'mainapp.urls'
@@ -128,4 +131,20 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'subscription_list'
 LOGOUT_REDIRECT_URL = 'login'
-ALLOWED_HOSTS = ['saharMarzougui.pythonanywhere.com']
+
+sentry_sdk.init(
+    dsn="https://c4a72c9518d6c2af612969312a5e8638@o4508365968179200.ingest.de.sentry.io/4508370849235024",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    _experiments={
+        # Set continuous_profiling_auto_start to True
+        # to automatically start the profiler on when
+        # possible.
+        "continuous_profiling_auto_start": True,
+    },
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you have user authentication)
+    send_default_pii=True
+)

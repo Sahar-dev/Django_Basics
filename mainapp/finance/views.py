@@ -312,3 +312,9 @@ class DashboardView(LoginRequiredMixin, View):
             'top_customer_totals': json.dumps(top_customer_totals),
         }
         return render(request, self.template_name, context)
+
+
+class TestErrorView(View):
+    def get(self, request):
+        division_by_zero = 1 / 0  # Deliberate error
+        return HttpResponse("This won't be reached.")

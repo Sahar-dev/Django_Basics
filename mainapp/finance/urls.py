@@ -2,13 +2,13 @@
 
 from django.urls import path
 from . import views
-
+from .views import TestErrorView
 urlpatterns = [
     # ----------------------------
     # Home or Dashboard URL
     # ----------------------------
     path('', views.DashboardView.as_view(), name='dashboard'),
-
+    path('test-error/', TestErrorView.as_view(), name='test-error'),
     # ----------------------------
     # Customer URLs
     # ----------------------------
